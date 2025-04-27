@@ -34,6 +34,9 @@ or in **https://godotengine.org/asset-library/asset** if I uploaded the plugin t
 - **Confirmation for disabled plugins**
 - **Type-safe implementation** 
 
+## Changelog
+See [CHANGELOG.MD](CHANGELOG.md) for details.
+
 ## Usage
 
 1. The tool appears in the editor toolbar
