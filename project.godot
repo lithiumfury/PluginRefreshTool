@@ -26,4 +26,4 @@ project/assembly_name="PluginRefreshEditorTool"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/PluginRefreshTool/plugin.cfg")
+enabled=PackedStringArray("res://addons/PluginRefreshTool/plugin.cfg", "res://addons/test_plugin/plugin.cfg")

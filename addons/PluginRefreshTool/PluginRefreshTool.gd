@@ -63,7 +63,7 @@ func load_plugins() -> void:
 		
 		var err: Error = dir.list_dir_begin()
 		if err != OK:
-				push_error("Failed to list addons directory: Error %s" % err)
+				push_error("Failed to list addons directory: Error %s" % error_string(err))
 				return
 		
 		var addon_dir: String = dir.get_next()
@@ -82,16 +82,19 @@ func process_plugin_dir(dir_name: String) -> void:
 		var cfg: ConfigFile = ConfigFile.new()
 		var err: Error = cfg.load(cfg_path)
 		if err != OK:
-				push_error("Failed to load plugin config at %s: Error %s" % [cfg_path, err])
+				push_error("Failed to load plugin config at %s: Error %s" % [cfg_path, error_string(err)])
 				return
 		
 		var plugin_name: String = cfg.get_value("plugin", "name", "")
 		if plugin_name != PLUGIN_NAME: # Explicitly skip self
 				plugins_data.append(PluginInfo.new(plugin_name, dir_name, cfg_path))
 
+
 func update_dropdown() -> void:
 		plugin_dropdown.clear()
-		
+
+		plugins_data.sort_custom(_sort_plugins)
+
 		var name_counts: Dictionary = {}
 		for plugin: PluginInfo in plugins_data:
 				name_counts[plugin.name] = name_counts.get(plugin.name, 0) + 1
@@ -104,13 +107,18 @@ func update_dropdown() -> void:
 				
 				plugin_dropdown.add_item(display_name, i)
 				plugin_dropdown.set_item_metadata(i, plugin.path)
+		
+
+func _sort_plugins(a: PluginInfo, b: PluginInfo) -> bool:
+		return a.name.to_lower() < b.name.to_lower()
 
 func _on_refresh_requested() -> void:
 		var selected_idx: int = plugin_dropdown.selected
 		if selected_idx == -1:
-				return
+			return
 		
 		var plugin_path: String = plugin_dropdown.get_item_metadata(selected_idx)
+
 		if not EditorInterface.is_plugin_enabled(plugin_path):
 				confirmation_dialog.dialog_text = "Plugin is disabled. Enable and refresh?"
 				confirmation_dialog.popup_centered()
@@ -124,8 +132,7 @@ func _on_refresh_confirmed() -> void:
 				refresh_plugin(plugin_path)
 
 func refresh_plugin(plugin_path: String) -> void:
-		var was_enabled: bool = EditorInterface.is_plugin_enabled(plugin_path)
-		if was_enabled:
-				EditorInterface.set_plugin_enabled(plugin_path, false)
-		EditorInterface.set_plugin_enabled(plugin_path, true)
-		print("Refreshed plugin: %s" % plugin_path.get_file())
+	if EditorInterface.is_plugin_enabled(plugin_path):
+		EditorInterface.set_plugin_enabled(plugin_path, false)
+	EditorInterface.set_plugin_enabled(plugin_path, true)
+	print("Refreshed plugin: %s" % plugin_path.get_slice("/", 3))
