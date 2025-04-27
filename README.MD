@@ -35,7 +35,7 @@ or in **https://godotengine.org/asset-library/asset** if I uploaded the plugin t
 - **Type-safe implementation** 
 
 ## Changelog
-See [CHANGELOG.MD](CHANGELOG.md) for details.
+See [CHANGELOG.MD](CHANGELOG.MD) for details.
 
 ## Usage
 
