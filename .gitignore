@@ -12,7 +12,7 @@ export_credentials.cfg
 .editorconfig
 
 # Project specific
-addons/test_plugin/
+addons/*_test/
 
 
 # Imported translations (automatically generated from CSV files)
